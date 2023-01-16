@@ -33,14 +33,22 @@ public class CronParser {
             throw new IllegalArgumentException("Invalid argument");
         }
 
+        Map<Field, Set<Integer>> fieldToResultMap = parseFieldExpressions(fieldExpressions);
+        String command = fieldExpressions[5];
+
+        return new CronExpression(fieldToResultMap, command);
+    }
+
+    private Map<Field, Set<Integer>> parseFieldExpressions(String[] fieldExpressions) {
         Map<Field, Set<Integer>> fieldToResultMap = new HashMap<>();
+
         final AtomicInteger counter = new AtomicInteger();
         fieldParsers.forEach((field, fieldParser) -> {
             String fieldExpression = fieldExpressions[counter.getAndIncrement()];
             fieldToResultMap.put(field, fieldParser.parse(fieldExpression));
         });
 
-        return new CronExpression(fieldToResultMap, fieldExpressions[5]);
+        return fieldToResultMap;
     }
 
     public static void main(String[] args) {

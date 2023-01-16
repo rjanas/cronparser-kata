@@ -26,21 +26,22 @@ public class CronExpression {
 
     @Override
     public String toString() {
-        return """
-                minute         %s
-                hour           %s
-                day of month   %s
-                month          %s
-                day of week    %s
-                command        %s
-                """.formatted(
-                printValues(fieldToExecutionValueMap.get(Field.MINUTE)),
-                printValues(fieldToExecutionValueMap.get(Field.HOUR)),
-                printValues(fieldToExecutionValueMap.get(Field.DAY_OF_MONTH)),
-                printValues(fieldToExecutionValueMap.get(Field.MONTH)),
-                printValues(fieldToExecutionValueMap.get(Field.DAY_OF_WEEK)),
-                this.command
+        return String.join("\n",
+                printField("minute", fieldToExecutionValueMap.get(Field.MINUTE)),
+                printField("hour", fieldToExecutionValueMap.get(Field.HOUR)),
+                printField("day of month", fieldToExecutionValueMap.get(Field.DAY_OF_MONTH)),
+                printField("month", fieldToExecutionValueMap.get(Field.MONTH)),
+                printField("day of week", fieldToExecutionValueMap.get(Field.DAY_OF_WEEK)),
+                printRow("command", this.command)
         );
+    }
+
+    private String printField(String fieldName, Set<Integer> executionValues) {
+        return printRow(fieldName, printValues(executionValues));
+    }
+
+    private String printRow(String label, String value) {
+        return String.format("%-14s %s", label, value);
     }
 
     private String printValues(Set<Integer> executionValues) {
